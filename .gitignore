@@ -1,0 +1,9 @@
+# Public repository allowlist: ignore every local file by default.
+*
+
+# Only these reviewed, public files may enter Git.
+!/.gitignore
+!/README.md
+!/public/
+!/public/CLASH_V1_GUIDE_PUBLIC.md
+!/public/SHADOWROCKET_V1_GUIDE_PUBLIC.md
