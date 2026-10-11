@@ -299,6 +299,19 @@ Discord 应使用普通 `PROXY`，不属于 `AI-PROXY`。本项目的 iPhone 真
 
 如果仍有问题，应先查看 Shadowrocket 请求日志，确认实际漏网请求后再做最小补充。不建议无依据加入 Sentry、AppsFlyer、Cloudflare 等大型共享或第三方域名。
 
+### Mixin / WalletConnect 的最小分流示例
+
+如果使用 `FINAL,DIRECT`，Mixin 的聊天和转账正常，但扫码登录或连接外部 DApp 失败，可先查看 Shadowrocket 日志。某次实际排查中，`api.mixin.one`、`blaze.mixin.one` 和 `relay.walletconnect.org` 落入了 `FINAL,DIRECT`；按该证据，在 `[Rule]` 中、最终规则之前加入：
+
+```ini
+DOMAIN-SUFFIX,mixin.one,PROXY
+DOMAIN,relay.walletconnect.org,PROXY
+```
+
+这两条使用普通 `PROXY`，不进入 `AI-PROXY`；WalletConnect 只精确匹配 `relay.walletconnect.org`。该案例在 iPhone Shadowrocket“配置”模式下完成静态检查与功能真机验收：聊天、转账继续正常，扫码登录及外部 DApp / WalletConnect 连接恢复正常。修改后未额外执行日志级路由复核，因此不能把功能测试等同于每条请求的出口验证。
+
+其他环境应先核对实际日志和首次命中规则。不要无依据扩大到整个 `walletconnect.org`，也不要顺带加入其他尚未确认必要的第三方域名。
+
 本方法不增加 DeepSeek 专用规则，也不增加 Gemini 专用规则。
 
 ## 14. 重新订阅后的正确复用方法
